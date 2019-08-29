@@ -11,7 +11,8 @@ class HogContainer extends React.Component {
         this.state = {
             hogsArray: HogData,
             filters: 'name', //'weight'
-            greased: false
+            greased: false,
+            showHidden: false
         }
     }
     
@@ -25,6 +26,16 @@ class HogContainer extends React.Component {
         this.setState({filters: event.target.value})
     }
 
+    handleHidden = () => {
+        // Toggle the state of showHidden
+        this.setState({showHidden: !this.state.showHidden})
+    }
+    filterHiddenArray = (hogsArray) => {
+        let hiddenArray
+        this.state.showHidden ? 
+        hiddenArray = hogsArray.filter(hog => hog.hidden ) : hiddenArray = hogsArray
+        return hiddenArray
+    }
     filterGreaseArray = (hogsArray) => {
         // Take in an array and only return the ones with the greased === true
         let greaseArray
@@ -33,8 +44,8 @@ class HogContainer extends React.Component {
         return greaseArray
     }
 
-    sortArrayName = (hogsArray) => {    
-        const filteredHogs = this.filterGreaseArray(hogsArray).sort((a, b) => {
+    sortArrayName = (hogsArray) => {
+        const filteredHogs = this.filterGreaseArray(this.filterHiddenArray(hogsArray)).sort((a, b) => {
             if(a.name < b.name) { return -1; }
             if(a.name > b.name) { return 1; }
             return 0;
@@ -43,7 +54,7 @@ class HogContainer extends React.Component {
     }
 
     sortArrayWeight = (hogsArray) => {
-        const filteredHogs = this.filterGreaseArray(hogsArray).sort((a, b) => {
+        const filteredHogs = this.filterGreaseArray(this.filterHiddenArray(hogsArray)).sort((a, b) => {
             if(a.weight < b.weight) { return -1; }
             if(a.weight > b.weight) { return 1; }
             return 0;
@@ -51,19 +62,15 @@ class HogContainer extends React.Component {
         return filteredHogs
     }
 
-
     render(){
-        // console.log(this.filterGreaseArray(this.state.hogsArray))
-        console.log(this.state.hogsArray)
         return( 
             <div>   
-                <Filters handleDropDown={this.handleDropDown} handleChecked={this.handleChecked}/>
+                <Filters handleDropDown={this.handleDropDown} handleChecked={this.handleChecked} handleHidden={this.handleHidden} />
                 {
                     this.state.filters === 'name' ?
                     <Hogs hogsArray={this.sortArrayName(this.state.hogsArray)} /> :
                     <Hogs hogsArray={this.sortArrayWeight(this.state.hogsArray)} />
                 }
-                {/* <Hogs hogsArray={this.state.hogsArray} /> */}
             </div>
         )
     }
