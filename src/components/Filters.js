@@ -17,6 +17,7 @@ class Filters extends React.Component {
                 <input type="checkbox" name="greased" value="greased" defaultChecked="" onChange={this.props.handleChecked} />
 
                 {/* Hidden Hogs button onClick */}
+                <button className="hide-hogs" onClick={this.props.handleHidden}>Hide Hogs?</button>
             </div>
         )
     }
